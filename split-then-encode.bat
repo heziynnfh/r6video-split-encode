@@ -1,7 +1,9 @@
-::0.9.0
+::0.9.1
 ::2020年3月29日22点22分
 ::2020年3月30日10点25分
 ::设置缓存文件单独放入一个文件夹
+::2020年4月1日12点31分
+::将缓存文件夹名设置为程序执行时间
 
 ::关闭信息显示
 @echo off
@@ -10,7 +12,7 @@
 set SOURCE_FILE=%~1
 set SOURCE_FILE_NAME=%~n1
 set SOURCE_FILE_PATH=%~dp1
-set TEMP_PATH_NAME=tempCstspA
+set TEMP_PATH_NAME=temp%date:~0,4%%date:~5,2%%date:~8,2%%time:~0,2%%time:~3,2%%time:~6,2%%time:~9,3%
 set TEMP_PATH=%SOURCE_FILE_PATH%%TEMP_PATH_NAME%
 set AVS_VIDEO_FILE=%TEMP_PATH%\video.avs
 set AVS_AUDIO_FILE=%TEMP_PATH%\audio.avs
@@ -35,7 +37,8 @@ set SOURCE_FILE=%TEMP_PATH%\%SOURCE_FILE_NAME%_split.mp4
 echo LoadPlugin("%LSMASH_LIB_SOURCE%")>"%AVS_VIDEO_FILE%"
 echo LSMASHVideoSource("%SOURCE_FILE%")>>"%AVS_VIDEO_FILE%"
 echo #deinterlace>>"%AVS_VIDEO_FILE%"
-echo #crop>>"%AVS_VIDEO_FILE%"
+echo #crop(320,0,-320,0)>>"%AVS_VIDEO_FILE%"
+echo #LanczosResize(1706,720) # Lanczos (Sharp)>>"%AVS_VIDEO_FILE%"
 echo LanczosResize(1280,720) # Lanczos (Sharp)>>"%AVS_VIDEO_FILE%"
 echo #denoise>>"%AVS_VIDEO_FILE%"
 
@@ -60,4 +63,4 @@ echo LSMASHAudioSource("%SOURCE_FILE%", track=0)>>"%AVS_AUDIO_FILE%"
 RMDIR /S /Q "%TEMP_PATH%"
 
 ::退出
-pause
+::pause
